@@ -43,7 +43,7 @@ class UIKitViewController: UIViewController {
     }
     
     /// Toggle the color of the label, called by the parent view (SwiftUI)
-    func toggleBackgroundColor() {
+    func toggleColor() {
         if labelView.backgroundColor == .black {
             labelView.backgroundColor = .white
             labelView.textColor = .black
