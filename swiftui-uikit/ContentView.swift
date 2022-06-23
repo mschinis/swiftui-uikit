@@ -8,12 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    private func didTapToggleButton() {
+        
+    }
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            UIKitViewControllerRepresentable(text: "Some kind of text")
+
+            VStack {
+                Spacer()
+
+                HStack(alignment: .bottom) {
+                    Button("Toggle background color", action: didTapToggleButton)
+                }
+            }
+            
         }
     }
 }
