@@ -5,15 +5,23 @@
 //  Created by Michael Schinis on 23/06/2022.
 //
 
+import Combine
 import Foundation
 import UIKit
 import SwiftUI
 
 class UIKitViewController: UIViewController {
+    enum Action {
+        case toggleColor
+    }
+
     // This UIViewController has parameters passed in from the caller
     let text: String
 
-    lazy var labelView: UILabel = {
+    private var publisher: PassthroughSubject<Action, Never>
+    private var subscriptions: Set<AnyCancellable> = .init()
+    
+    private lazy var labelView: UILabel = {
         let label = UILabel()
         label.text = text
         label.backgroundColor = .black
@@ -22,9 +30,21 @@ class UIKitViewController: UIViewController {
         return label
     }()
 
-    init(text: String) {
+    init(text: String, publisher: PassthroughSubject<Action, Never>) {
         self.text = text
+        self.publisher = publisher
+        
         super.init(nibName: nil, bundle: nil)
+
+        // Listen for updates coming from SwiftUI
+        publisher
+            .receive(on: DispatchQueue.main)
+            .sink { action in
+                switch action {
+                case .toggleColor: self.toggleColor()
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     required init?(coder: NSCoder) {
@@ -43,7 +63,7 @@ class UIKitViewController: UIViewController {
     }
     
     /// Toggle the color of the label, called by the parent view (SwiftUI)
-    func toggleColor() {
+    private func toggleColor() {
         if labelView.backgroundColor == .black {
             labelView.backgroundColor = .white
             labelView.textColor = .black
@@ -56,9 +76,10 @@ class UIKitViewController: UIViewController {
 
 struct UIKitViewControllerRepresentable: UIViewControllerRepresentable {
     let text: String
+    let publisher: PassthroughSubject<UIKitViewController.Action, Never>
 
     func makeUIViewController(context: Context) -> UIKitViewController {
-        UIKitViewController(text: text)
+        UIKitViewController(text: text, publisher: publisher)
     }
     
     func updateUIViewController(_ uiViewController: UIKitViewController, context: Context) {

@@ -5,16 +5,20 @@
 //  Created by Michael Schinis on 23/06/2022.
 //
 
+import Combine
 import SwiftUI
 
 struct ContentView: View {
-    private func didTapToggleButton() {
-        
-    }
+    var publisher: PassthroughSubject<UIKitViewController.Action, Never> = .init()
     
+    /// Sends a published event to 
+    private func didTapToggleButton() {
+        publisher.send(.toggleColor)
+    }
+
     var body: some View {
         VStack {
-            UIKitViewControllerRepresentable(text: "Some kind of text")
+            UIKitViewControllerRepresentable(text: "Some kind of text", publisher: publisher)
 
             VStack {
                 Spacer()
