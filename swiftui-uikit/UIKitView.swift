@@ -15,12 +15,23 @@ class UIKitViewController: UIViewController {
         case toggleColor
     }
 
+    enum Update {
+        case toggleColor(LoadingStateWithoutValue)
+
+        var associatedAction: Action {
+            switch self {
+            case .toggleColor: return .toggleColor
+            }
+        }
+    }
+
     // This UIViewController has parameters passed in from the caller
     let text: String
 
     private var publisher: PassthroughSubject<Action, Never>
+    private var updatesPublisher: PassthroughSubject<Update, Never>
     private var subscriptions: Set<AnyCancellable> = .init()
-    
+
     private lazy var labelView: UILabel = {
         let label = UILabel()
         label.text = text
@@ -30,10 +41,11 @@ class UIKitViewController: UIViewController {
         return label
     }()
 
-    init(text: String, publisher: PassthroughSubject<Action, Never>) {
+    init(text: String, publisher: PassthroughSubject<Action, Never>, updatesPublisher: PassthroughSubject<Update, Never>) {
         self.text = text
         self.publisher = publisher
-        
+        self.updatesPublisher = updatesPublisher
+
         super.init(nibName: nil, bundle: nil)
 
         // Listen for updates coming from SwiftUI
@@ -64,12 +76,22 @@ class UIKitViewController: UIViewController {
     
     /// Toggle the color of the label, called by the parent view (SwiftUI)
     private func toggleColor() {
-        if labelView.backgroundColor == .black {
-            labelView.backgroundColor = .white
-            labelView.textColor = .black
-        } else {
-            labelView.backgroundColor = .black
-            labelView.textColor = .white
+        // Send an event that async work has started
+        updatesPublisher.send(.toggleColor(.loading))
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            if self.labelView.backgroundColor == .black {
+                self.labelView.backgroundColor = .white
+                self.labelView.textColor = .black
+            } else {
+                self.labelView.backgroundColor = .black
+                self.labelView.textColor = .white
+            }
+
+            // Send an event that an async work has finished
+            self.updatesPublisher.send(
+                .toggleColor(.loaded(.init()))
+            )
         }
     }
 }
@@ -77,11 +99,12 @@ class UIKitViewController: UIViewController {
 struct UIKitViewControllerRepresentable: UIViewControllerRepresentable {
     let text: String
     let publisher: PassthroughSubject<UIKitViewController.Action, Never>
+    let updatesPublisher: PassthroughSubject<UIKitViewController.Update, Never>
 
     func makeUIViewController(context: Context) -> UIKitViewController {
-        UIKitViewController(text: text, publisher: publisher)
+        UIKitViewController(text: text, publisher: publisher, updatesPublisher: updatesPublisher)
     }
-    
+
     func updateUIViewController(_ uiViewController: UIKitViewController, context: Context) {
         
     }

@@ -8,23 +8,56 @@
 import Combine
 import SwiftUI
 
-struct ContentView: View {
+@MainActor
+class ContentViewModel: ObservableObject {
     var publisher: PassthroughSubject<UIKitViewController.Action, Never> = .init()
+    var updatesPublisher: PassthroughSubject<UIKitViewController.Update, Never> = .init()
     
-    /// Sends a published event to 
-    private func didTapToggleButton() {
+    private var subscriptions: Set<AnyCancellable> = .init()
+
+    @Published var toggleColorLoadingState: LoadingStateWithoutValue = .idle
+
+    init() {
+        updatesPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { update in
+                switch update {
+                case let .toggleColor(loadingState):
+                    self.toggleColorLoadingState = loadingState
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// Sends a published event to uikit
+    func didTapToggleButton() {
         publisher.send(.toggleColor)
     }
+}
+
+struct ContentView: View {
+    var publisher: PassthroughSubject<UIKitViewController.Action, Never> = .init()
+    var updatesPublisher: PassthroughSubject<UIKitViewController.Update, Never> = .init()
+    
+    @StateObject private var viewModel = ContentViewModel()
+    
 
     var body: some View {
         VStack {
-            UIKitViewControllerRepresentable(text: "Some kind of text", publisher: publisher)
+            UIKitViewControllerRepresentable(
+                text: "Some kind of text",
+                publisher: viewModel.publisher,
+                updatesPublisher: viewModel.updatesPublisher
+            )
 
             VStack {
                 Spacer()
 
                 HStack(alignment: .bottom) {
-                    Button("Toggle background color", action: didTapToggleButton)
+                    Button("Toggle background color", action: {
+                        viewModel.didTapToggleButton()
+                    })
+                    .disabled(viewModel.toggleColorLoadingState.isLoading)
                 }
             }
             

@@ -12,6 +12,7 @@
 		CDB9EE602864742E0060F20A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDB9EE5F2864742E0060F20A /* Assets.xcassets */; };
 		CDB9EE632864742E0060F20A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDB9EE622864742E0060F20A /* Preview Assets.xcassets */; };
 		CDB9EE6A286474570060F20A /* UIKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB9EE69286474570060F20A /* UIKitView.swift */; };
+		CDB9EE6C2864981C0060F20A /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB9EE6B2864981C0060F20A /* LoadingState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		CDB9EE5F2864742E0060F20A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CDB9EE622864742E0060F20A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CDB9EE69286474570060F20A /* UIKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitView.swift; sourceTree = "<group>"; };
+		CDB9EE6B2864981C0060F20A /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 				CDB9EE5B2864742D0060F20A /* swiftui_uikitApp.swift */,
 				CDB9EE5D2864742D0060F20A /* ContentView.swift */,
 				CDB9EE69286474570060F20A /* UIKitView.swift */,
+				CDB9EE6B2864981C0060F20A /* LoadingState.swift */,
 				CDB9EE5F2864742E0060F20A /* Assets.xcassets */,
 				CDB9EE612864742E0060F20A /* Preview Content */,
 			);
@@ -140,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDB9EE6C2864981C0060F20A /* LoadingState.swift in Sources */,
 				CDB9EE6A286474570060F20A /* UIKitView.swift in Sources */,
 				CDB9EE5E2864742D0060F20A /* ContentView.swift in Sources */,
 				CDB9EE5C2864742D0060F20A /* swiftui_uikitApp.swift in Sources */,
